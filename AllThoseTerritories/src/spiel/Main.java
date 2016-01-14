@@ -14,6 +14,7 @@ import java.io.IOException;
 public class Main extends Application
 {
     private Stage primaryStage;
+    private MapLoader mapLoader;
 
     @Override
     public void start(Stage primaryStage) throws Exception
@@ -47,5 +48,14 @@ public class Main extends Application
         }
     }
 
-    public static void main(String[] args) { launch(args); }
+    public static void main(String[] args)
+    {
+        Main m = new Main();
+        m.mapLoader = new MapLoader("src/spiel/world.map");
+        m.mapLoader.execute();
+
+        m.mapLoader.inhaltAusgeben();   // dient nur zur Kontrolle
+
+        launch(args);
+    }
 }
