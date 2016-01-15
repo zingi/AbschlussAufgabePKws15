@@ -54,7 +54,26 @@ public class Main extends Application
         m.mapLoader = new MapLoader("src/spiel/world.map");
         m.mapLoader.execute();
 
-        m.mapLoader.inhaltAusgeben();   // dient nur zur Kontrolle
+        //m.mapLoader.inhaltAusgeben();   // dient nur zur Kontrolle
+
+        Territory territories[] = m.mapLoader.getTerritories();
+
+
+        /*  // for testing
+        for (Territory t: territories)
+        {
+            String o = t.getName() + ": ";
+            if (t.getNeighbors() != null)
+            {
+                Territory[] nachbarn = t.getNeighbors();
+                for (Territory n: nachbarn)
+                {
+                    o+= n.getName() + ", ";
+                }
+            }
+            System.out.println(o);
+        }
+        */
 
         launch(args);
     }

@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 /**
@@ -346,4 +347,134 @@ public class MapLoader
             i++;
         }
     }
+
+    public Territory[] getTerritories()
+    {
+        Territory[] territories = new Territory[patches.size()];
+        int i=0;
+        for (String patch: patches.keySet())
+        {
+            ArrayList<int[]> land = patches.get(patch);
+            int[][] landArr = new int[land.size()][];
+            landArr = land.toArray(landArr);
+            int[] capital = capitals.get(patch);
+
+            Territory t = new Territory(patch, capital[0], capital[1], landArr);
+            territories[i] = t;
+            i++;
+        }
+        for (i=0; i<territories.length; i++)    // finde die Nachbarn, die es selber schon besitzt
+        {
+            String territoryName        = territories[i].getName();
+            String[] neighborsNames     = neighbors.get(territoryName);
+
+            if (neighborsNames == null) {continue;}     // falls Territorium selber keine Nachbarn besitzt
+
+            Territory[] thisNeighbors   = new Territory[neighborsNames.length];
+            int neighborsIndex          = 0;
+
+            for (String n: neighborsNames)
+            {
+                for (int j=0; j<territories.length; j++)
+                {
+                    String thatName = territories[j].getName();
+
+                    if (thatName.equals(n))
+                    {
+                        thisNeighbors[neighborsIndex] = territories[j];
+                        neighborsIndex++;
+                    }
+                }
+            }
+
+            territories[i].setNeighbors(thisNeighbors);
+        }
+        for (i=0; i<territories.length; i++)    // finde die Nachbarn, wo das Territorium auf der rechten Seite des ':' steht
+        {
+            Territory thisTerritory         = territories[i];
+            String territoryName            = thisTerritory.getName();
+            Territory[] alreadyNeighbors    = thisTerritory.getNeighbors();
+            String[] alreadyNeighborsNames  = null;
+            ArrayList<String> newNeighbors  = new ArrayList<String>();
+
+            boolean hasAlready=true;
+            if (alreadyNeighbors == null) { hasAlready = false; }
+
+            if (hasAlready)
+            {
+                alreadyNeighborsNames = new String[alreadyNeighbors.length];
+                for (int k=0; k<alreadyNeighbors.length; k++)
+                {
+                    alreadyNeighborsNames[k] = alreadyNeighbors[k].getName();
+                }
+            }
+
+            for (String t: neighbors.keySet())
+            {
+                String[] ts = neighbors.get(t);
+                if (Arrays.asList(ts).contains(territoryName))
+                {
+                    if (hasAlready)
+                    {
+                        if (Arrays.asList(alreadyNeighborsNames).contains(t)){}
+                        else
+                        {
+                            newNeighbors.add(t);
+                        }
+                    }
+                    else
+                    {
+                        newNeighbors.add(t);
+                    }
+                }
+            }
+
+            if (newNeighbors.size() > 0)
+            {
+                String[] newNeighborsArr = new String[newNeighbors.size()];
+                newNeighborsArr = newNeighbors.toArray(newNeighborsArr);
+
+                Territory[] allNeighbors;
+                if (hasAlready)
+                {
+                    allNeighbors = new Territory[newNeighborsArr.length + alreadyNeighbors.length];
+                    for (int k=0; k<alreadyNeighbors.length; k++)
+                    {
+                        allNeighbors[k] = alreadyNeighbors[k];
+                    }
+                }
+                else
+                {
+                    allNeighbors = new Territory[newNeighborsArr.length];
+                }
+                for (int k=0; k<newNeighborsArr.length; k++)    // hole die Territory Objekte zu den entsprechenden Namen
+                {
+                    for (Territory t: territories)
+                    {
+                        if (t.getName().equals(newNeighborsArr[k]))
+                        {
+                            if (hasAlready)
+                            {
+                                allNeighbors[k + alreadyNeighbors.length] = t;
+                            }
+                            else
+                            {
+                                allNeighbors[k] = t;
+                            }
+                        }
+                    }
+
+                }
+                thisTerritory.setNeighbors(allNeighbors);
+            }
+        }
+        return territories;
+    }
 }
+
+
+
+
+
+
+
