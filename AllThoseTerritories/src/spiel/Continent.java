@@ -23,4 +23,14 @@ public class Continent
     public String getName()                 { return name; }
     public int getBonus()                   { return bonus; }
     public Territory[] getTerritories()     { return territories; }
+    public int Bonus(int User){
+        boolean allbelong = true;
+        for(Territory t:territories){
+            if(User != t.getOwnership())
+                return 0;
+        }
+        return bonus;
+    }
+
+
 }

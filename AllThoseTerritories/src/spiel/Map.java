@@ -59,6 +59,31 @@ public class Map
         return c.getBonus();
     }
 
+    public int getRecruitment(int User)             // 1 Für Pc und 2 Für Spieler
+    {
+
+            int recruits = 0;
+            int curr;
+
+            for (Territory t : territories) {
+                curr = t.getOwnership();
+                if (curr == User) {
+                    recruits++;
+                }
+
+
+            }
+            recruits /= 3;
+
+            for(Continent c:continents)
+            {
+                recruits  += c.Bonus(User);
+
+            }
+            return recruits;
+
+    }
+
     public void drawMap()
     {
         System.out.println(pane);
@@ -66,5 +91,7 @@ public class Map
         pane.getChildren().add(polygon);
         // TODO: implement
     }
+
+
 
 }
