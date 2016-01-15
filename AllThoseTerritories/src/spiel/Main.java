@@ -14,7 +14,8 @@ import java.io.IOException;
 public class Main extends Application
 {
     private Stage primaryStage;
-    private MapLoader mapLoader;
+    private Map map;
+    private AnchorPane pane;
 
     @Override
     public void start(Stage primaryStage) throws Exception
@@ -28,7 +29,7 @@ public class Main extends Application
         try
         {
             FXMLLoader loader = new FXMLLoader(Main.class.getResource("MainWindow.fxml"));
-            AnchorPane pane = loader.load();
+            pane = loader.load();
 
             primaryStage.setWidth(1250.00);
             primaryStage.setHeight(650.00);
@@ -41,6 +42,8 @@ public class Main extends Application
 
             primaryStage.setScene(scene);
             primaryStage.show();
+
+            map = new Map("src/spiel/world.map", pane);
         }
         catch (IOException e)
         {
@@ -50,30 +53,9 @@ public class Main extends Application
 
     public static void main(String[] args)
     {
-        Main m = new Main();
-        m.mapLoader = new MapLoader("src/spiel/world.map");
-        m.mapLoader.execute();
-
-        //m.mapLoader.inhaltAusgeben();   // dient nur zur Kontrolle
-
-        Territory territories[] = m.mapLoader.getTerritories();
-
-
-        /*  // for testing
-        for (Territory t: territories)
-        {
-            String o = t.getName() + ": ";
-            if (t.getNeighbors() != null)
-            {
-                Territory[] nachbarn = t.getNeighbors();
-                for (Territory n: nachbarn)
-                {
-                    o+= n.getName() + ", ";
-                }
-            }
-            System.out.println(o);
-        }
-        */
+        /*
+        * Initialisierung von Map, ist in die Funktion mainWindow() gerueckt
+        * */
 
         launch(args);
     }

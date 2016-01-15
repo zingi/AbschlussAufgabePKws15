@@ -348,7 +348,7 @@ public class MapLoader
         }
     }
 
-    public Territory[] getTerritories()
+    public Territory[] getTerritories()     // gibt ein Array mit allen Territorien zurueck
     {
         Territory[] territories = new Territory[patches.size()];
         int i=0;
@@ -469,6 +469,41 @@ public class MapLoader
             }
         }
         return territories;
+    }
+
+    public Continent[] getContinents(Territory[] terr)      // gibt ein Array mit allen Kontinenten zuruck
+    {
+        Territory[] territories     = terr;     //  Pointerstruktur aufrecht erhalten
+        Continent[] continentsArr   = new Continent[continents.size()];
+        int continentsArrIndex      = 0;
+
+        for (String continent: continents.keySet())
+        {
+            int bonus                       = continentsBonus.get(continent);
+            String[] territoriesNames       = continents.get(continent);
+            Territory[] partsOfContinent    = new Territory[territoriesNames.length];
+            int partsOfContinentIndex       = 0;
+
+            for (int i=0; i<territoriesNames.length; i++)
+            {
+                for (int k=0; k<territories.length; k++)
+                {
+                    if (territoriesNames[i].equals(territories[k].getName()))
+                    {
+                        partsOfContinent[partsOfContinentIndex] = territories[k];
+                        partsOfContinentIndex++;
+                    }
+                }
+            }
+
+            Continent c = new Continent(continent, bonus);
+            c.setTerritories(partsOfContinent);
+
+            continentsArr[continentsArrIndex] = c;
+            continentsArrIndex++;
+        }
+
+        return continentsArr;
     }
 }
 

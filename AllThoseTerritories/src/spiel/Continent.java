@@ -19,4 +19,8 @@ public class Continent
     {
         this.territories = territories;
     }
+
+    public String getName()                 { return name; }
+    public int getBonus()                   { return bonus; }
+    public Territory[] getTerritories()     { return territories; }
 }
