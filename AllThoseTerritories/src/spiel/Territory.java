@@ -42,6 +42,8 @@ public class Territory
     public String getName()             { return name; }
     public int[][] getPatches()         { return patches; }
     public int getOwnership()           { return ownership; }
+    public int[] getCapital()           { return capital; }
+    public Polygon[] getPolygons()      { return polygons; }
 
     public void createPolygons()
     {
@@ -62,7 +64,7 @@ public class Territory
             p.setStrokeType(StrokeType.INSIDE);
             p.setStrokeWidth(1.5);
 
-            // adding Polygon to local Polygons List
+            // add Polygon to local Polygons List
             polygons[polygonsIndex] = p;
             polygonsIndex++;
         }
@@ -89,12 +91,11 @@ public class Territory
                     map.territoryMouseExitedEvent(name);
                 }
             });
+            p.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent event) { map.territoryMouseClickedEvent(name); }
+            });
         }
-    }
-
-    public Polygon[] getPolygons()
-    {
-        return polygons;
     }
 
     public void setPolygonsColor(int red, int green, int blue)
@@ -110,5 +111,35 @@ public class Territory
         {
             p.setStroke(Color.rgb(red, green, blue));
         }
+    }
+
+    // returns Polygons of Territory without handling - only for underlay styling
+    public Polygon[] getDummiePolygons(Color polygonColor, Color polygonStrokeColor, double strokeWidth, StrokeType strokeType)
+    {
+        Polygon[] dummiePolygons    = new Polygon[patches.length];
+        int polygonsIndex           = 0;
+
+        for (int[] patch: patches)
+        {
+            Double[] doublePatchArray = new Double[patch.length];
+            for(int i=0; i<patch.length; i++)
+            {
+                doublePatchArray[i] = new Double(patch[i]);
+            }
+            Polygon p = new Polygon();
+            p.getPoints().setAll(doublePatchArray);
+
+            // Polygon Initial Styling
+            p.setFill(polygonColor);
+            p.setStroke(polygonStrokeColor);
+            p.setStrokeType(strokeType);
+            p.setStrokeWidth(strokeWidth);
+
+            // add Polygon to Dummie-Polygons List
+            dummiePolygons[polygonsIndex] = p;
+            polygonsIndex++;
+        }
+
+        return  dummiePolygons;
     }
 }
