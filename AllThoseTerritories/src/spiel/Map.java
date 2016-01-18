@@ -89,12 +89,27 @@ public class Map
 
         for (Territory t: territories)
         {
+            t.setMap(this);
             for (Polygon p: t.getPolygons())
             {
                 p.setFill(Color.rgb(225,103,114));
-                p.setStroke(Color.rgb(240,240,240));
+                p.setStroke(Color.rgb(225,103,114));
                 pane.getChildren().add(p);
             }
         }
+    }
+
+    public void territoryMouseEnteredEvent(String territoryName)
+    {
+        Territory territory = getTerritoryByName(territoryName);
+        territory.setPolygonsStrokeColor(240,240,240);
+
+        System.out.println(territoryName);
+    }
+
+    public void territoryMouseExitedEvent(String territoryName)
+    {
+        Territory territory = getTerritoryByName(territoryName);
+        territory.setPolygonsStrokeColor(225,103,114);
     }
 }

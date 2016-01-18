@@ -1,6 +1,10 @@
 package spiel;
 
+import javafx.event.EventHandler;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
+import javafx.scene.shape.StrokeType;
 
 /**
  * Created by aaronzingerle on 15.01.16.
@@ -12,6 +16,7 @@ public class Territory
     private Territory[] neighbors;
     private int[][] patches;
     private int ownership = 0;  //  0 = noch nicht vergeben, 1 = gehoert Computer, 2 = gehoert Spieler;
+    private Map map;
 
     Polygon[] polygons;
 
@@ -31,6 +36,7 @@ public class Territory
     {
         this.neighbors = neighbors;
     }
+    public void setMap(Map map) { this.map = map; }
 
     public Territory[] getNeighbors()   { return neighbors; }
     public String getName()             { return name; }
@@ -52,15 +58,57 @@ public class Territory
             Polygon p = new Polygon();
             p.getPoints().setAll(doublePatchArray);
 
+            // Polygon Initial Styling
+            p.setStrokeType(StrokeType.INSIDE);
+            p.setStrokeWidth(1.5);
+
+            // adding Polygon to local Polygons List
             polygons[polygonsIndex] = p;
             polygonsIndex++;
         }
+
+        addPolygonHandlers();
     }
 
-    public void addPolygonHandlers(){}
+    public void addPolygonHandlers()
+    {
+        for (Polygon p: polygons)
+        {
+            p.setOnMouseEntered(new EventHandler<MouseEvent>()
+            {
+                @Override
+                public void handle(MouseEvent event)
+                {
+                    map.territoryMouseEnteredEvent(name);
+                }
+            });
+            p.setOnMouseExited(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent event)
+                {
+                    map.territoryMouseExitedEvent(name);
+                }
+            });
+        }
+    }
 
     public Polygon[] getPolygons()
     {
         return polygons;
+    }
+
+    public void setPolygonsColor(int red, int green, int blue)
+    {
+        for (Polygon p: polygons)
+        {
+            p.setFill(Color.rgb(red, green, blue));
+        }
+    }
+    public void setPolygonsStrokeColor(int red, int green, int blue)
+    {
+        for (Polygon p: polygons)
+        {
+            p.setStroke(Color.rgb(red, green, blue));
+        }
     }
 }
