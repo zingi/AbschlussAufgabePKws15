@@ -23,6 +23,8 @@ public class Territory
 
         this.name       = name;
         this.patches    = patches;
+
+        createPolygons();
     }
 
     public void setNeighbors(Territory[] neighbors)
@@ -35,6 +37,30 @@ public class Territory
     public int[][] getPatches()         { return patches; }
     public int getOwnership()           { return ownership; }
 
-    //  TODO: create polygonBuilder+EventHandler, write getterMethod
+    public void createPolygons()
+    {
+        polygons            = new Polygon[patches.length];
+        int polygonsIndex   = 0;
 
+        for (int[] patch: patches)
+        {
+            Double[] doublePatchArray = new Double[patch.length];
+            for(int i=0; i<patch.length; i++)
+            {
+                doublePatchArray[i] = new Double(patch[i]);
+            }
+            Polygon p = new Polygon();
+            p.getPoints().setAll(doublePatchArray);
+
+            polygons[polygonsIndex] = p;
+            polygonsIndex++;
+        }
+    }
+
+    public void addPolygonHandlers(){}
+
+    public Polygon[] getPolygons()
+    {
+        return polygons;
+    }
 }

@@ -1,7 +1,9 @@
 package spiel;
 
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
+import javafx.scene.shape.Rectangle;
 
 /**
  * Created by aaronzingerle on 15.01.16.
@@ -59,39 +61,40 @@ public class Map
         return c.getBonus();
     }
 
-    public int getRecruitment(int User)             // 1 Für Pc und 2 Für Spieler
+    public int getRecruitment(int user)             // 1 Für Pc und 2 Für Spieler
     {
-
             int recruits = 0;
             int curr;
 
-            for (Territory t : territories) {
+            for (Territory t : territories)
+            {
                 curr = t.getOwnership();
-                if (curr == User) {
-                    recruits++;
-                }
-
-
+                if (curr == user) { recruits++; }
             }
             recruits /= 3;
 
             for(Continent c:continents)
             {
-                recruits  += c.Bonus(User);
-
+                recruits  += c.Bonus(user);
             }
             return recruits;
-
     }
 
     public void drawMap()
     {
-        System.out.println(pane);
-        Polygon polygon = new Polygon(10,110,120,130,200,10);
-        pane.getChildren().add(polygon);
-        // TODO: implement
+        // http://www.colourlovers.com/palette/3372733/Raspberry_Wine_RC
+        Rectangle background = new Rectangle(0,0,1250,650);
+        background.setFill(Color.rgb(89,38,69));
+        pane.getChildren().add(background);
+
+        for (Territory t: territories)
+        {
+            for (Polygon p: t.getPolygons())
+            {
+                p.setFill(Color.rgb(225,103,114));
+                p.setStroke(Color.rgb(240,240,240));
+                pane.getChildren().add(p);
+            }
+        }
     }
-
-
-
 }

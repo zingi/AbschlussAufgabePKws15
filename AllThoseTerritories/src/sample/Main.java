@@ -57,7 +57,16 @@ public class Main extends Application {
 
     public void drawSomething()
     {
-        Polygon polygon = new Polygon(10,110,120,130,200,10);
+        int[] a = {10,110,120,130,200,10};
+        Double[] doubles = new Double[a.length];
+
+        for(int i=0; i<a.length; i++)
+        {
+            doubles[i] = new Double(a[i]);
+        }
+
+        Polygon polygon = new Polygon();
+        polygon.getPoints().setAll(doubles);
         pane.getChildren().add(polygon);
 
         Rectangle rectangle = new Rectangle(200,200,100,100);
