@@ -14,8 +14,9 @@ import java.io.IOException;
 public class Main extends Application
 {
     private Stage primaryStage;
-    private Map map;
     private AnchorPane pane;
+
+    private Game game;
 
     @Override
     public void start(Stage primaryStage) throws Exception
@@ -43,7 +44,7 @@ public class Main extends Application
             primaryStage.setScene(scene);
             primaryStage.show();
 
-            map = new Map("src/spiel/world.map", pane);
+            game = new Game("src/spiel/world.map", pane, primaryStage);
         }
         catch (IOException e)
         {

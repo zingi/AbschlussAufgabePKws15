@@ -1,13 +1,16 @@
 package spiel;
 
+import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.StrokeType;
+import javafx.scene.text.TextAlignment;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created by aaronzingerle on 15.01.16.
@@ -18,15 +21,21 @@ public class Map
     private Territory territories[];
     private Continent continents[];
     private AnchorPane pane;
+    private HashMap<String, Label> armeeBesetzungen;
+    private Game game;
+    private int territoriesQuantity;
 
-    public Map(String dateiPfad, AnchorPane pane)
+    public Map(String dateiPfad, AnchorPane pane, Game game)
     {
         this.pane = pane;
+        this.game = game;
         mapLoader = new MapLoader(dateiPfad);
         mapLoader.execute();
 
         territories = mapLoader.getTerritories();
+        territoriesQuantity = territories.length;
         continents = mapLoader.getContinents(territories);
+        createArmeeBesetzungen();
 
         drawMap();
     }
@@ -50,6 +59,19 @@ public class Map
         return null;
     }
 
+    public Territory getTerritoryByIndex(int territoryIndex)
+    {
+        if (territoryIndex < territoriesQuantity && territoryIndex > -1)
+        {
+            Territory t = territories[territoryIndex];
+            return t;
+        }
+        else
+        {
+            return null;
+        }
+    }
+
     public Continent getContinentByName(String continentName)
     {
         for (int i=0; i<continents.length; i++)
@@ -59,10 +81,79 @@ public class Map
         return null;
     }
 
+    public int getTerritoriesQuantity() { return territoriesQuantity; }
+
     public int getContinentBonusByContinentName(String continentName)
     {
         Continent c = getContinentByName(continentName);
         return c.getBonus();
+    }
+
+    private void createArmeeBesetzungen()
+    {
+        armeeBesetzungen = new HashMap<String, Label>();
+        if (territories != null)
+        {
+            for (Territory t: territories)
+            {
+                Label l = new Label("0");
+                l.setTextFill(Color.rgb(240,240,240));
+                l.setTextAlignment(TextAlignment.CENTER);
+                armeeBesetzungen.put(t.getName(), l);
+            }
+        }
+    }
+
+    public void setArmeeBesetzungen(String territoryName, int anzahlArmeen)
+    {
+        Label l = armeeBesetzungen.get(territoryName);
+        l.setText(anzahlArmeen + "");
+    }
+
+    public int getArmeeBesetzungen(String territoryName)
+    {
+        Label l = armeeBesetzungen.get(territoryName);
+        int anzahlArmeen = Integer.parseInt(l.getText());
+        return anzahlArmeen;
+    }
+
+    public void setTerritoryOwnership(String territoryName, int ownership)
+    {
+        Territory t = getTerritoryByName(territoryName);
+        t.setOwnership(ownership);
+    }
+
+    public int getTerritoryOwnership(String territoryName)
+    {
+        Territory t = getTerritoryByName(territoryName);
+        return t.getOwnership();
+    }
+
+    public boolean isEveryTerritoryOccupied()
+    {
+        boolean allTerritoriesOccupied = true;
+        for (Territory t: territories)
+        {
+            if (getTerritoryOwnership(t.getName()) == 0)
+            {
+                allTerritoriesOccupied = false;
+                break;
+            }
+        }
+        return allTerritoriesOccupied;
+    }
+
+    public int numberOfFreeTerritories()
+    {
+        int freeTerritories = 0;
+        for (Territory t: territories)
+        {
+            if (t.getOwnership() == 0)
+            {
+                freeTerritories++;
+            }
+        }
+        return freeTerritories;
     }
 
     public int getRecruitment(int user)     // 1 Für Pc und 2 Für Spieler
@@ -111,6 +202,16 @@ public class Map
             {
                 pane.getChildren().add(p);
             }
+        }
+
+        for (Territory t: territories)
+        {
+            String tName = t.getName();
+            Label l = armeeBesetzungen.get(tName);
+            l.setTranslateX(t.getCapital()[0] - 5);
+            l.setTranslateY(t.getCapital()[1] - 5);
+
+            pane.getChildren().add(l);
         }
     }
 
@@ -184,18 +285,26 @@ public class Map
         Territory territory = getTerritoryByName(territoryName);
         territory.setPolygonsStrokeColor(240,240,240);
 
-        System.out.println(territoryName);
+        game.territoryEvent(territoryName, "mouseEntered");
     }
 
     public void territoryMouseExitedEvent(String territoryName)
     {
         Territory territory = getTerritoryByName(territoryName);
         territory.setPolygonsStrokeColor(89,38,69);
+
+        game.territoryEvent(territoryName, "mouseExited");
     }
 
-    public void territoryMouseClickedEvent(String territoryName)
+    public void territoryMouseLeftClickedEvent(String territoryName)
     {
-        Territory territory = getTerritoryByName(territoryName);
-        territory.setPolygonsColor(180,219,173);
+        game.territoryEvent(territoryName, "mouseLeftClicked");
+        //territory.setPolygonsColor(180,219,173);
+    }
+
+    public void territoryMouseRightClickedEvent(String territoryName)
+    {
+        game.territoryEvent(territoryName, "mouseRightClicked");
+        //territory.setPolygonsColor(201,175,139);
     }
 }

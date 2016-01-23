@@ -1,6 +1,7 @@
 package spiel;
 
 import javafx.event.EventHandler;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
@@ -32,11 +33,9 @@ public class Territory
         createPolygons();
     }
 
-    public void setNeighbors(Territory[] neighbors)
-    {
-        this.neighbors = neighbors;
-    }
-    public void setMap(Map map) { this.map = map; }
+    public void setNeighbors(Territory[] neighbors)     { this.neighbors = neighbors; }
+    public void setMap(Map map)                         { this.map = map; }
+    public void setOwnership(int ownership)             { this.ownership = ownership; }
 
     public Territory[] getNeighbors()   { return neighbors; }
     public String getName()             { return name; }
@@ -93,7 +92,17 @@ public class Territory
             });
             p.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
-                public void handle(MouseEvent event) { map.territoryMouseClickedEvent(name); }
+                public void handle(MouseEvent event)
+                {
+                    if (event.getButton() == MouseButton.SECONDARY)
+                    {
+                        map.territoryMouseRightClickedEvent(name);
+                    }
+                    else
+                    {
+                        map.territoryMouseLeftClickedEvent(name);
+                    }
+                }
             });
         }
     }
