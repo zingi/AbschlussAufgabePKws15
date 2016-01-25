@@ -1,6 +1,7 @@
 package spiel;
 
 import javafx.event.EventHandler;
+import javafx.scene.effect.Effect;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
@@ -104,6 +105,14 @@ public class Territory
                     }
                 }
             });
+        }
+    }
+
+    public void addPolygonEffects(Effect effect)
+    {
+        for (Polygon p: polygons)
+        {
+            p.setEffect(effect);
         }
     }
 

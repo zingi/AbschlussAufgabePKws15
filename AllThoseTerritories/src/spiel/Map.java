@@ -1,6 +1,7 @@
 package spiel;
 
 import javafx.scene.control.Label;
+import javafx.scene.effect.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
@@ -10,6 +11,7 @@ import javafx.scene.shape.StrokeType;
 import javafx.scene.text.TextAlignment;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 /**
@@ -97,7 +99,7 @@ public class Map
             for (Territory t: territories)
             {
                 Label l = new Label("0");
-                l.setTextFill(Color.rgb(240,240,240));
+                l.setTextFill(Color.rgb(50,50,50));
                 l.setTextAlignment(TextAlignment.CENTER);
                 armeeBesetzungen.put(t.getName(), l);
             }
@@ -141,6 +143,76 @@ public class Map
             }
         }
         return allTerritoriesOccupied;
+    }
+
+    public boolean canUserAttack()
+    {
+        boolean possibleAttack = false;
+        for (Territory t: territories)
+        {
+            if (t.getOwnership() == 2 && getArmeeBesetzungen(t.getName()) > 2)
+            {
+                Territory[] neighbors = t.getNeighbors();
+                for (Territory n: neighbors)
+                {
+                    if (n.getOwnership() != 2) { possibleAttack = true; }
+                }
+            }
+        }
+        return possibleAttack;
+    }
+
+    public boolean canUserAttackFrom(Territory enemy, Territory friend)
+    {
+        boolean isValidAttack = false;
+        if (Arrays.asList(friend.getNeighbors()).contains(enemy))
+        {
+            if (getArmeeBesetzungen(friend.getName()) > 2 && enemy.getOwnership() != 2)
+            {
+                if (getArmeeBesetzungen(enemy.getName()) > 1 && getArmeeBesetzungen(friend.getName()) > 3)
+                {
+                    isValidAttack = true;
+                }
+                if (getArmeeBesetzungen(enemy.getName()) == 1)
+                {
+                    isValidAttack = true;
+                }
+            }
+        }
+        return isValidAttack;
+    }
+
+    public boolean canUserMoveFrom(Territory t)
+    {
+        boolean possibleMove = false;
+        if (t.getOwnership() == 2 && getArmeeBesetzungen(t.getName()) > 1)
+        {
+            Territory[] neighbors = t.getNeighbors();
+            for (Territory n: neighbors)
+            {
+                if (n.getOwnership() == 2) { possibleMove = true; }
+            }
+        }
+        return possibleMove;
+    }
+
+    public void blurExcept(Territory[] group)
+    {
+        for (Territory t: territories)
+        {
+            if (!Arrays.asList(group).contains(t))
+            {
+                t.addPolygonEffects(new MotionBlur(45, 15));
+            }
+        }
+    }
+
+    public void clearAllEffects()
+    {
+        for (Territory t: territories)
+        {
+            t.addPolygonEffects(null);
+        }
     }
 
     public int numberOfFreeTerritories()
