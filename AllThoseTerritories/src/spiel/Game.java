@@ -67,16 +67,36 @@ public class Game
         }
         if (event.equals("escapeKeyPressed"))
         {
-            if (firstTerritoryChoice != null && enemyTerritoryChoice == null && canFight == true)
+            if ((firstTerritoryChoice != null && enemyTerritoryChoice == null && canFight == true) ||
+                    (enemyTerritoryChoice != null && !winInThisRound) || (canFight == false))
             {
-                firstTerritoryChoice.setPolygonsStrokeColor(89,38,69);
+                if (firstTerritoryChoice != null)
+                {
+                    firstTerritoryChoice.setPolygonsStrokeColor(89,38,69);
+                }
                 firstTerritoryChoice = null;
                 map.clearAllEffects();
             }
         }
         if (event.equals("enterKeyPressed"))
         {
-            if (winInThisRound)    // finished moving armies to new adopted land
+            if ((enemyTerritoryChoice != null && !winInThisRound) || (canFight == false))
+            {
+                map.clearAllEffects();
+                if (firstTerritoryChoice != null)
+                {
+                    firstTerritoryChoice.setPolygonsStrokeColor(89,38,69);
+                }
+
+                // end this round
+                // computer an der Reihe
+
+                ComputerTrait computerTrait = new ComputerTrait(this);
+
+                // new Round after Computer Trait
+                newRound();
+            }
+            else if (winInThisRound)    // finished moving armies to new adopted land
             {
                 winInThisRound = false;
                 firstTerritoryChoice = null;
@@ -84,15 +104,20 @@ public class Game
                 map.clearAllEffects();
                 primaryStage.setTitle("now you can transfer armies between two territories [finish: press enter]");
             }
-            if ((enemyTerritoryChoice != null && !winInThisRound) || (canFight == false))
-            {
-                // end this round
-                // computer an der Reihe
-                // TODO: create ComputerProcess Class - Computer Attac | Computer Move
-                map.clearAllEffects();
-                firstTerritoryChoice.setPolygonsStrokeColor(89,38,69);
-            }
         }
+    }
+
+    public void newRound()
+    {
+        recruitmentNumber = 0;
+        recruitmentDistribution = true;
+        phase = 0;
+
+        firstTerritoryChoice = null;
+        enemyTerritoryChoice = null;
+        transferTerritoryChoice = null;
+        winInThisRound = false;
+        canFight = true;
     }
 
     public void phaseLanderwerb(String territoryName, String event)
@@ -147,10 +172,8 @@ public class Game
         if (recruitmentDistribution)
         {
             sendRecruits(t, event);
-            if (!map.canUserAttack())
-            {
-                canFight = false;
-            }
+            if (!map.canUserAttack()) { canFight = false; }
+            else { canFight = true; }
         }
         else
         {
