@@ -100,18 +100,18 @@ public class Game
         Territory t = map.getTerritoryByName(territoryName);
         if (event.equals("mouseLeftClicked"))
         {
-            if (t.getOwnership() == 0)
+            if (t.getOwnership() == 0)      // player choose a territory (receives it if it's free)
             {
                 map.setTerritoryOwnership(territoryName, 2);
                 map.setArmeeBesetzungen(territoryName, 1);
                 t.setPolygonsColor(180,219,173);
 
-                if (!map.isEveryTerritoryOccupied())
+                if (!map.isEveryTerritoryOccupied())    // computer choose a territory if at least one is free
                 {
                     boolean computerHasOccupied = false;
                     while (!computerHasOccupied)
                     {
-                        int territoryNumber = random.nextInt(map.getTerritoriesQuantity()-1);
+                        int territoryNumber = random.nextInt(map.getTerritoriesQuantity());
                         Territory computerT = map.getTerritoryByIndex(territoryNumber);
                         if (computerT.getOwnership() == 0)
                         {

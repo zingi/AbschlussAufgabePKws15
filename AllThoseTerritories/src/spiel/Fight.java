@@ -84,7 +84,7 @@ public class Fight
         {
             messageText += "Enemy: " + i + "\n";
         }
-        win = true;
+        win = true; // so long as the defense did not win
         for (int i=0; i<friendDice.size(); i++)
         {
             int fD = friendDice.get(i);
@@ -150,8 +150,8 @@ public class Fight
         }
     }
 
-    private int getDiceNumber()
+    public static int getDiceNumber()
     {
-        return random.nextInt(6)+1;
+        return new Random().nextInt(6)+1;
     }
 }
