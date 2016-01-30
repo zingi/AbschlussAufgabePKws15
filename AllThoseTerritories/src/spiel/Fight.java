@@ -8,7 +8,6 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Random;
 
@@ -119,6 +118,8 @@ public class Fight
         game.pane.getChildren().add(whiteBoard);
         game.pane.getChildren().add(message);
 
+        game.isWhiteBoardOpened = true;
+
         whiteBoard.setOnMouseClicked(new EventHandler<MouseEvent>()
         {
             @Override
@@ -148,6 +149,8 @@ public class Fight
             Territory[] group = {friend, enemy};
             game.map.blurExcept(group);
         }
+
+        game.isWhiteBoardOpened = false;
     }
 
     public static int getDiceNumber()

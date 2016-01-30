@@ -96,6 +96,8 @@ public class ComputerTrait
         Collections.sort(friendDice);
         Collections.sort(enemyDice);
 
+        messageText += "Computer attacking " + enemy.getName() + " from " + friend.getName() + "\n\n";
+
         for (Integer i: friendDice) { messageText += "Computer: " + i + "\n"; }
         for (Integer i: enemyDice) { messageText += "User: " + i + "\n"; }
 
@@ -170,7 +172,7 @@ public class ComputerTrait
         game.map.setArmeeBesetzungen(moveOrigin.getName(), originQuantityBefore - moveQuantity);
         game.map.setArmeeBesetzungen(moveGoal.getName(), goalQuantityBefore + moveQuantity);
 
-        messageText += "\n Computer moved from " + moveOrigin.getName() + " ";
+        messageText += "\nComputer moved from " + moveOrigin.getName() + " ";
         messageText += moveQuantity + " armies to " + moveGoal.getName() + "\n";
     }
 
@@ -182,10 +184,11 @@ public class ComputerTrait
         message.setTranslateY(100);
         message.setFont(new Font(20));
 
-
         message.setText(messageText);
         game.pane.getChildren().add(whiteBoard);
         game.pane.getChildren().add(message);
+
+        game.isWhiteBoardOpened = true;
 
         whiteBoard.setOnMouseClicked(new EventHandler<MouseEvent>()
         {
@@ -202,6 +205,8 @@ public class ComputerTrait
         game.pane.getChildren().remove(whiteBoard);
         game.pane.getChildren().remove(message);
         game.map.clearAllEffects();
+
+        game.isWhiteBoardOpened = false;
     }
 
     private boolean canComputerAttack()
@@ -219,7 +224,7 @@ public class ComputerTrait
                         int friends = game.map.getArmeeBesetzungen(t.getName());
                         int enemies = game.map.getArmeeBesetzungen(n.getName());
 
-                        if ((enemies <= 2 && friends >= 3) || (enemies > 2 && friends >=4))
+                        if ((enemies == 1 && friends > 2) || (enemies > 1 && friends > 3))
                         {
                             if (possibleAttacks.keySet().contains(t))
                             {

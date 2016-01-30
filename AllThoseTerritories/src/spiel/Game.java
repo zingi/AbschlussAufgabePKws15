@@ -1,12 +1,10 @@
 package spiel;
 
-import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
-import java.awt.*;
 import java.util.Arrays;
 import java.util.Random;
 
@@ -27,6 +25,7 @@ public class Game
     Random random = new Random();
     private boolean winInThisRound = false; // to move armys to new adopted land
     private boolean canFight = true;
+    public boolean isWhiteBoardOpened = false;
     Fight fight;
 
     public Game(String dateiPfad, AnchorPane pane, Stage primaryStage)
@@ -57,6 +56,8 @@ public class Game
 
     public void territoryEvent(String territoryName, String event)
     {
+        if (isWhiteBoardOpened){return;}
+
         if (phase == 1 && territoryName!= null)
         {
             phaseEroberung(territoryName, event);
@@ -92,6 +93,7 @@ public class Game
                 // computer an der Reihe
 
                 ComputerTrait computerTrait = new ComputerTrait(this);
+                EndOfGame.check(this);
 
                 // new Round after Computer Trait
                 newRound();
@@ -207,6 +209,8 @@ public class Game
                         fight = new Fight(firstTerritoryChoice, enemyTerritoryChoice, this);
                         if (fight.getWin())
                         {
+                            EndOfGame.check(this);
+
                             winInThisRound = true;
                             Territory[] group = new Territory[2];
                             group[0] = fight.getEnemy();
@@ -276,11 +280,31 @@ public class Game
                     }
                 }
             }
-            if (event.equals("mouseEntered")){}
-            if (event.equals("mouseExited")){}
+            if (event.equals("mouseEntered"))
+            {
+                primaryStage.setTitle("-" + t.getName() + "-");
+            }
+            if (event.equals("mouseExited"))    // show possible actions during phaseEroberung
+            {
+                if (firstTerritoryChoice == null)
+                {
+                    primaryStage.setTitle("[click] friendly territory to start an action");
+                }
+                else if (firstTerritoryChoice != null && enemyTerritoryChoice == null && canFight == true)
+                {
+                    primaryStage.setTitle("[r.click] valid enemy territory, to start attack");
+                }
+                else if (firstTerritoryChoice != null && transferTerritoryChoice != null)
+                {
+                    primaryStage.setTitle("to end moving, press [enter]");
+                }
+                else if ((firstTerritoryChoice != null && canFight == false) ||
+                (firstTerritoryChoice != null && enemyTerritoryChoice != null && !winInThisRound))
+                {
+                    primaryStage.setTitle("[r.click] second friendly territory to move armies, or press [enter] to end");
+                }
+            }
         }
-
-        //territory conquest
     }
 
     public void sendRecruits(Territory t, String event)
