@@ -1,9 +1,6 @@
 package spiel;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -504,6 +501,19 @@ public class MapLoader
         }
 
         return continentsArr;
+    }
+
+    public static boolean checkIfFileExists(String path)
+    {
+        File f = new File(path);
+        if(f.exists() && !f.isDirectory())
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 }
 

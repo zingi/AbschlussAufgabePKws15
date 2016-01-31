@@ -113,6 +113,10 @@ public class Fight
             messageText += "\n" + enemy.getName() + " takeover success";
             handleWin();
         }
+        else
+        {
+            messageText += "\n" + enemy.getName() + " takeover fail";
+        }
 
         message.setText(messageText);
         game.pane.getChildren().add(whiteBoard);

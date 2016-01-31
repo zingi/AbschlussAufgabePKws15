@@ -15,6 +15,7 @@ import java.io.IOException;
  */
 public class Main extends Application
 {
+    public static String[] arguments;
     private Stage primaryStage;
     private AnchorPane pane;
 
@@ -46,7 +47,26 @@ public class Main extends Application
             primaryStage.setScene(scene);
             primaryStage.show();
 
-            game = new Game("src/spiel/world.map", pane, primaryStage);
+            if (arguments.length > 0)
+            {
+                if (MapLoader.checkIfFileExists(arguments[0]))
+                {
+                    String mapFile = arguments[0];
+
+                    System.out.println("[" + mapFile + "] loaded");
+                    game = new Game(mapFile, pane, primaryStage);
+                }
+                else
+                {
+                    System.err.println("passed file not valid");
+                    System.exit(0);
+                }
+            }
+            else
+            {
+                System.err.println("no file passed");
+                System.exit(0);
+            }
         }
         catch (IOException e)
         {
@@ -56,9 +76,7 @@ public class Main extends Application
 
     public static void main(String[] args)
     {
-        /*
-        * Initialisierung von Map, ist in die Funktion mainWindow() gerueckt
-        * */
+        arguments = args;
 
         launch(args);
     }
