@@ -22,11 +22,18 @@ public class EndOfGame
 
         ArrayList<Integer> ownerships = new ArrayList<Integer>();
 
-        for (Territory t: game.map.getAllTerritories()) { ownerships.add(game.map.getArmeeBesetzungen(t.getName())); }
+        for (Territory t: game.map.getAllTerritories())
+        {
+            ownerships.add(t.getOwnership());
+        }
 
+        if (ownerships.contains(0))
+        {
+            return 0;
+        }
         if (ownerships.contains(1) && ownerships.contains(2)){ returnValue = 0; }
-        else if (ownerships.contains(1)){ returnValue = 1; }
-        else if (ownerships.contains(2)){ returnValue = 2; }
+        else if (ownerships.contains(1) && !ownerships.contains(2)){ returnValue = 1; }
+        else if (ownerships.contains(2) && !ownerships.contains(1)){ returnValue = 2; }
 
         if (returnValue == 1 || returnValue == 2){ handleEnd(game, returnValue); }
 
@@ -42,7 +49,7 @@ public class EndOfGame
         whiteBoard = new Rectangle(1250, 650, Color.rgb(255,255,255,0.7));
         message = new Label();
         message.setTranslateX(100);
-        message.setTranslateY(250);
+        message.setTranslateY(75);
         message.setFont(new Font(20));
 
 

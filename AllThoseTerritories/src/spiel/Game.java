@@ -57,6 +57,7 @@ public class Game
     public void territoryEvent(String territoryName, String event)
     {
         if (isWhiteBoardOpened){return;}
+        EndOfGame.check(this);
 
         if (phase == 1 && territoryName!= null)
         {
